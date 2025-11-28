@@ -1,0 +1,6 @@
+name = "nosaic-success"
+compatibility_date = "2025-11-17"
+pages_build_output_dir = "dist"
+
+[vars]
+VITE_API_URL = "https://nosaic-success.noswork-7dd.workers.dev"
