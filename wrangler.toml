@@ -4,3 +4,7 @@ pages_build_output_dir = "dist"
 
 [vars]
 VITE_API_URL = "https://nosaic-success.noswork-7dd.workers.dev"
+
+[[services]]
+binding = "SuccessBackend"
+service = "nosaic-success"
