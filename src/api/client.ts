@@ -1,5 +1,12 @@
 import axios from "axios";
 
+// Token getter function that will be set by components
+let getToken: (() => Promise<string | null>) | null = null;
+
+export const setTokenGetter = (getter: () => Promise<string | null>) => {
+	getToken = getter;
+};
+
 const api = axios.create({
 	baseURL: "",
 	headers: {
@@ -7,44 +14,20 @@ const api = axios.create({
 	},
 });
 
-// Add auth token to requests
-api.interceptors.request.use((config) => {
-	const token = localStorage.getItem("accessToken");
-	if (token) {
-		config.headers.Authorization = `Bearer ${token}`;
+// Add Clerk auth token to requests
+api.interceptors.request.use(async (config) => {
+	try {
+		if (getToken) {
+			const token = await getToken();
+			if (token) {
+				config.headers.Authorization = `Bearer ${token}`;
+			}
+		}
+	} catch (error) {
+		// Token might not be available, continue without it
+		console.warn("Failed to get auth token:", error);
 	}
 	return config;
 });
-
-// Handle token refresh
-api.interceptors.response.use(
-	(response) => response,
-	async (error) => {
-		const originalRequest = error.config;
-
-		if (error.response?.status === 401 && !originalRequest._retry) {
-			originalRequest._retry = true;
-
-			const refreshToken = localStorage.getItem("refreshToken");
-			if (refreshToken) {
-				try {
-					const { data } = await axios.post(`/auth/refresh`, {
-						refreshToken,
-					});
-
-					localStorage.setItem("accessToken", data.accessToken);
-					originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
-
-					return api(originalRequest);
-				} catch (refreshError) {
-					localStorage.clear();
-					window.location.href = "/login";
-				}
-			}
-		}
-
-		return Promise.reject(error);
-	},
-);
 
 export default api;

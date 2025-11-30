@@ -15,7 +15,7 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,
-		"types": ["@cloudflare/workers-types"],
+
 		"baseUrl": "."
 	},
 	"include": ["src", "functions", "types.d.ts"]

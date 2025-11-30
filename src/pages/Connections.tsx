@@ -164,8 +164,6 @@ export default function Connections() {
 						{platforms.support.map((platform) => {
 							const connected = isConnected(platform.id);
 							const connectionId = getConnectionId(platform.id);
-							const needsSubdomain =
-								platform.id === "zendesk" || platform.id === "freshdesk";
 
 							return (
 								<div
